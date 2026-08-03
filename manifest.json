@@ -1,0 +1,15 @@
+{
+  "name": "ЭлектроСправочник — калькуляторы электрика",
+  "short_name": "ЭлектроСправ",
+  "description": "Подбор сечения кабеля, автомата и УЗО, таблицы ПУЭ, расчёт тока по мощности",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f1720",
+  "theme_color": "#f5a623",
+  "lang": "ru",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
