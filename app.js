@@ -1,3 +1,21 @@
+// ==== Аналитика (цели Яндекс.Метрики) ====
+// Счётчик подключён в index.html. Каждая цель фиксируется один раз за визит,
+// чтобы конверсия по цели показывала "долю посетителей, дошедших до X", а не число кликов.
+const METRIKA_ID = 111275956;
+const reachedGoals = new Set();
+
+function trackGoal(name) {
+  if (reachedGoals.has(name)) return;
+  reachedGoals.add(name);
+  if (typeof ym === "function") {
+    try {
+      ym(METRIKA_ID, "reachGoal", name);
+    } catch (e) {
+      /* Метрика заблокирована (адблок/офлайн) — не мешаем работе калькулятора */
+    }
+  }
+}
+
 // ==== Навигация по вкладкам ====
 const tabBtns = document.querySelectorAll(".tab-btn");
 const tabs = document.querySelectorAll(".tab");
@@ -7,6 +25,7 @@ tabBtns.forEach((btn) => {
     const name = btn.dataset.tab;
     tabBtns.forEach((b) => b.classList.toggle("active", b === btn));
     tabs.forEach((t) => t.classList.toggle("hidden", t.dataset.tab !== name));
+    trackGoal("tab_" + name);
   });
 });
 
@@ -112,7 +131,9 @@ function computeCable() {
     <div class="result-row"><span class="k">По потере напряжения</span><span class="v">${fmt(byDrop.rounded, 2)} мм²</span></div>
     <div class="result-row"><span class="k">Допустимый ток итог. сечения</span><span class="v">${finalAmpacity} А</span></div>
     <p class="result-note">Определяющий критерий: ${governedBy}. Материал: ${MATERIAL_LABELS[material]}, прокладка: ${INSTALL_LABELS[install]}.</p>
+    <button type="button" class="btn-pro" data-pro-goal="cable">📄 Скачать протокол расчёта (Pro)</button>
   `;
+  trackGoal("calc_cable");
 }
 
 // ==== Вкладка "Автомат и УЗО" ====
@@ -148,7 +169,9 @@ function computeBreaker() {
     <div class="result-row"><span class="k">Допустимый ток кабеля</span><span class="v">${fmt(cableAmpacity)} А</span></div>
     <div class="result-row"><span class="k">Рекомендуемый номинал УЗО</span><span class="v">${rcd} А</span></div>
     <p class="result-note">Номинал автомата выбран между расчётным током нагрузки и допустимым током кабеля (≥ нагрузки, ≤ кабеля).</p>
+    <button type="button" class="btn-pro" data-pro-goal="breaker">📄 Скачать акт выбора автомата/УЗО (Pro)</button>
   `;
+  trackGoal("calc_breaker");
 }
 
 // ==== Вкладка "Таблицы ПУЭ" ====
@@ -193,9 +216,39 @@ function computePower() {
     <div class="result-row"><span class="k">Сеть</span><span class="v">${phase === 1 ? "220 В, 1 фаза" : "380 В, 3 фазы"}</span></div>
     <div class="result-row"><span class="k">cos φ</span><span class="v">${fmt(cosphi, 2)}</span></div>
   `;
+  trackGoal("calc_power");
 }
 
+// ==== Pro-заглушка (тест спроса на автогенерацию протокола/акта) ====
+const proModal = document.getElementById("pro-modal");
+const proModalContact = document.getElementById("pro-modal-contact");
+const proModalClose = document.getElementById("pro-modal-close");
+
+function openProModal(source) {
+  trackGoal("pro_click_" + source); // по какому калькулятору кликнули
+  trackGoal("pro_click"); // общая доля дошедших до Pro хотя бы раз
+  proModal.classList.remove("hidden");
+}
+
+function closeProModal() {
+  proModal.classList.add("hidden");
+}
+
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest(".btn-pro");
+  if (btn) openProModal(btn.dataset.proGoal);
+});
+
+proModalClose.addEventListener("click", closeProModal);
+proModal.addEventListener("click", (e) => {
+  if (e.target === proModal) closeProModal();
+});
+proModalContact.addEventListener("click", () => {
+  trackGoal("pro_contact_click"); // самый сильный сигнал — реально написали
+});
+
 // ==== Инициализация ====
+trackGoal("tab_cable"); // вкладка "Кабель" открыта по умолчанию, без клика
 renderTable();
 computeCable();
 computeBreaker();

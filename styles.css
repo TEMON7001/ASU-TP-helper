@@ -237,3 +237,82 @@ input[type="number"]:focus, select:focus {
 .tab-icon { font-size: 1.25rem; }
 
 .tab-btn.active { color: var(--accent); }
+
+/* ==== Pro-заглушка ==== */
+.btn-pro {
+  display: block;
+  width: 100%;
+  margin-top: 0.9rem;
+  padding: 0.7rem 0.8rem;
+  border-radius: 10px;
+  border: 1px dashed var(--accent-2);
+  background: transparent;
+  color: var(--accent-2);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-pro:active { opacity: 0.7; }
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 100;
+}
+
+.modal-overlay.hidden { display: none !important; }
+
+.modal-card {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.4rem 1.2rem 1.2rem;
+  max-width: 420px;
+  width: 100%;
+}
+
+.modal-card h3 {
+  margin: 0 0 0.6rem;
+  font-size: 1.05rem;
+  color: var(--text);
+}
+
+.modal-card p {
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  margin: 0 0 0.7rem;
+  line-height: 1.4;
+}
+
+.modal-close {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  background: none;
+  border: none;
+  font-size: 1rem;
+  color: var(--text-dim);
+  cursor: pointer;
+  padding: 0.3rem;
+}
+
+.btn-primary {
+  display: block;
+  text-align: center;
+  width: 100%;
+  padding: 0.75rem 0.8rem;
+  border-radius: 10px;
+  background: var(--accent);
+  color: #1a1200;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none;
+  margin-top: 0.4rem;
+}
